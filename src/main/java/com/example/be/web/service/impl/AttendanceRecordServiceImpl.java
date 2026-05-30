@@ -65,24 +65,24 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         // 2. Kiểm tra thời gian điểm danh ***
     //    tạm ẩn
     //*******************************************
-    //    LocalDateTime now = LocalDateTime.now();
-    //    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
-    //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
-    //    }
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
+            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
+        }
 
         // 2. Gọi AI model nhận diện khuôn mặt
     //        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
         FaceResponse recognize = faceService.recognize(faceImage, userId);
         boolean faceResult = false;
         if (recognize.getConfidence() > 0 && recognize.getConfidence() < 0.6) {
-            recognize.setMessage("Face not match"); //nên đẩy sang bên faceService*******************
+//            recognize.setMessage("Face not match"); //nên đẩy sang bên faceService*******************
+            recognize.setMessage("Khuôn mặt không khớp"); //nên đẩy sang bên faceService*******************
+
 //            return recognize;
             // Có thể throw exception hoặc trả về response với status INVALID
         }
         else {
             faceResult = true;
-
-            //    boolean faceResult = true; // giả sử luôn đúng để test *******
 
             // 3. Tạo record
             AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
