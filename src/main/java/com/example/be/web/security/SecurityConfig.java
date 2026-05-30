@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
+//@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
 //@RequiredArgsConstructor
 public class SecurityConfig {
 

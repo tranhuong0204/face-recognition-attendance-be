@@ -6,6 +6,9 @@ import com.example.be.web.service.AttendanceSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,9 @@ public class AttendanceSessionController {
         return ResponseEntity.ok(created);
     }
 
+    // 2. Cập nhật buổi điểm danh
+    @Tag(name = "attendanceSession")
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API cập nhật buổi điểm danh", description = "Admin / Leader")
@@ -39,8 +45,11 @@ public class AttendanceSessionController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
+
+    // 3. Xóa buổi điểm danh
+    @Tag(name = "attendanceSession")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @DeleteMapping("/{id}")
     @Operation(summary = "API xóa buổi điểm danh theo id", description = "Admin / Leader")
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         sessionService.deleteSession(id);
@@ -50,6 +59,7 @@ public class AttendanceSessionController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "API lấy buổi điểm danh theo id", description = "Admin / Leader / User")
+
     public ResponseEntity<AttendanceSessionResponseDto> getSessionById(@PathVariable Long id) {
         AttendanceSessionResponseDto session = sessionService.getSessionById(id);
         return ResponseEntity.ok(session);
@@ -71,4 +81,23 @@ public class AttendanceSessionController {
         long count = sessionService.countPresentStudentsInSession(sessionId);
         return ResponseEntity.ok(count);
     }
+
+    @Tag(name = "attendanceSession")
+    @PreAuthorize("hasAnyRole('USER')")
+    @GetMapping("/open")
+    @Operation(summary = "API lấy danh sách buổi điểm danh đang mở cho sinh viên", description = "User")
+    public ResponseEntity<Page<AttendanceSessionResponseDto>> getOpenSessionsForStudent(@ParameterObject Pageable pageable) {
+        Page<AttendanceSessionResponseDto> sessions = sessionService.getOpenSessionsForStudent(pageable);
+        return ResponseEntity.ok(sessions);
+    }
+
+    @Tag(name = "attendanceSession")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @GetMapping("/open/teacher")
+    @Operation(summary = "API lấy buổi điểm danh đang mở cho giáo viên", description = "Leader")
+    public ResponseEntity<AttendanceSessionResponseDto> getOpenSessionForTeacher() {
+        AttendanceSessionResponseDto session = sessionService.getOpenSessionForTeacher();
+        return ResponseEntity.ok(session);
+    }
+
 }

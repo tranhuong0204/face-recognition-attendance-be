@@ -20,6 +20,7 @@ public class AttendanceSessionResponseDto {
 //    private LocalDateTime updateAt;
     private AttendanceStatus status;
     private Long classroomId;
+    private String classroomTitle;
     private Long createdByUserId ;
     private Long locationId;
 }

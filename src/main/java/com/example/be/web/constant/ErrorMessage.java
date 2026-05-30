@@ -25,9 +25,10 @@ public class ErrorMessage {
     public static class AttendanceSession {
         public static final String SESSION_NOT_FOUND = "exception.session.not.found";
         public static final String ERR_CREATE_SESSION = "error.create.attendance.session";
-            public static final String ERR_UPDATE_SESSION = "error.update.attendance.session";
+        public static final String ERR_UPDATE_SESSION = "error.update.attendance.session";
         public static final String ERR_DELETE_SESSION = "error.delete.attendance.session";
         public static final String ERR_GET_ALL_SESSION = "exception.not.get.all.session";
+        public static final String OPEN_SESSION_NOT_FOUND_FOR_TEACHER = "exception.open.session.not.found.for.teacher";
     }
 
     public static class AttendanceRecord {

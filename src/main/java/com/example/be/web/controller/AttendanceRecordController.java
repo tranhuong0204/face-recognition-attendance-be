@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
+import com.example.be.web.doman.dto.response.attendance.StudentAttendanceStatsResponseDto;
 import com.example.be.web.service.AttendanceRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,6 @@ public class AttendanceRecordController {
     }
 
     // 4. Admin / Leader xem lịch sử của một user bất kỳ theo userId
-    // Lưu ý: USER thường không được gọi API này.
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API get records by userId", description = "Admin / Leader xem danh sách record của một user cụ thể")
@@ -78,13 +78,21 @@ public class AttendanceRecordController {
         return ResponseEntity.ok(records);
     }
 
-    // 5. USER xem lịch sử điểm danh của chính mình
-    // Flutter sinh viên nên gọi API này: GET /api/attendance/user/me
     @GetMapping("/user/me")
     @PreAuthorize("hasAnyRole('USER')")
     @Operation(summary = "API get records of current user", description = "User xem danh sách record của chính mình")
     public ResponseEntity<List<AttendanceRecordResponseDto>> getMyRecords() {
         List<AttendanceRecordResponseDto> records = attendanceRecordService.getMyRecords();
         return ResponseEntity.ok(records);
+    }
+
+    //thống kê theo từng lớp
+    @GetMapping("/class/{classId}/student-stats")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    @Operation(summary = "API thống kê điểm danh từng sinh viên theo lớp", description = "Admin / Leader")
+    public ResponseEntity<List<StudentAttendanceStatsResponseDto>> getStudentStatsByClass(
+            @PathVariable Long classId
+    ) {
+        return ResponseEntity.ok(attendanceRecordService.getStudentStatsByClass(classId));
     }
 }

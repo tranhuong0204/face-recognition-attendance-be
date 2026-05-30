@@ -25,7 +25,8 @@ public class UserController {
     private final UserService userService;
 
     @Tag(name="User_Controller")
-    @GetMapping
+    @Operation(summary = "Get user by id", description = "Admin / Leader")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
         return VsResponseUtil.success(userService.getUserById(userId));
     }

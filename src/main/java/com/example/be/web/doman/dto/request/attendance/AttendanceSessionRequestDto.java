@@ -37,7 +37,7 @@ public class AttendanceSessionRequestDto {
 //
 //    private LocalDateTime updateAt;
 
-    private AttendanceStatus status;
+//    private AttendanceStatus status;
 
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
 //    private Double radiusMeters; // Bán kính điểm danh (tùy chọn)
@@ -59,6 +59,9 @@ public class AttendanceSessionRequestDto {
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Long locationId;
+
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private AttendanceStatus status;
 
 }
 

@@ -16,6 +16,8 @@ public interface AttendanceSessionService {
     List<AttendanceSessionResponseDto> getAllSessions();
 //    Page<AttendanceSessionResponseDto> getSessions(Pageable pageable);
     long countPresentStudentsInSession(Long sessionId);
+    Page<AttendanceSessionResponseDto> getOpenSessionsForStudent(Pageable pageable);
+    AttendanceSessionResponseDto getOpenSessionForTeacher();
 
 }
 

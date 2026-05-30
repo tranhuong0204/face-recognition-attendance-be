@@ -13,7 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "class_registrations", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"class_id", "student_id"})
-})
+}) //
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

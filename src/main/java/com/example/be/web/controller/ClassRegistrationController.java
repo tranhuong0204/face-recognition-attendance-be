@@ -84,19 +84,6 @@ public class ClassRegistrationController {
         return classRegistrationService.getByClassId(pageable, classId);
     }
 
-//    @Tag(name = "Class Registration")
-//    @GetMapping("/{studentId}/classes/status")
-//    @PreAuthorize("hasAnyRole('USER')")
-//    @Operation(summary = "lấy danh sách lớp đã đăng ký của sinh viên theo trạng thái đăng ký", description = "User")
-//    public Page<ClassRegistrationResponseDto> getRegisteredClassesForStudentByStatus(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @PathVariable Long studentId,
-//            @RequestParam("status") RegistrationStatus status) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return classRegistrationService.getByStudentIdAndStatus(pageable, studentId, status);
-//    }
-
     @Tag(name = "class-registration-MEMBER-controller")
     @Operation(summary = "View the registered classes", description = "Member")
     @GetMapping("/registration/view")
@@ -115,11 +102,9 @@ public class ClassRegistrationController {
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "lấy danh sách sinh viên đã đăng ký của lớp học theo trạng thái đăng ký", description = "Admin / Leader")
     public Page<ClassRegistrationResponseDto> getRegisteredStudentsForClassByStatus(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @ParameterObject Pageable pageable,
             @PathVariable Long classId,
             @RequestParam("status") RegistrationStatus status) {
-        Pageable pageable = PageRequest.of(page, size);
         return classRegistrationService.getByClassIdAndStatus(pageable, classId, status);
     }
 }

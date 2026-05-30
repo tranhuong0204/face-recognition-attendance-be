@@ -5,6 +5,11 @@ import com.example.be.web.doman.dto.request.attendance.AttendanceRecordRequestDt
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
 import com.example.be.web.doman.entity.*;
+import com.example.be.web.doman.dto.response.attendance.StudentAttendanceStatsResponseDto;
+import com.example.be.web.doman.entity.AttendanceRecord;
+import com.example.be.web.doman.entity.AttendanceSession;
+import com.example.be.web.doman.entity.Location;
+import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceRecordMapper;
 import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.exception.extended.BadRequestException;
@@ -26,7 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -143,6 +151,49 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         Long userId = getCurrentUserId();
         List<AttendanceRecord> records = recordRepository.findByUser_Id(userId);
         return mapper.toResponseList(records);
+    }
+
+    // thống kê sinh viên theo lớp học
+    @Override
+    public List<StudentAttendanceStatsResponseDto> getStudentStatsByClass(Long classId) {
+        List<AttendanceRecord> records =
+                recordRepository.findByClassRoomId(classId);
+
+        Map<Long, StudentAttendanceStatsResponseDto> result = new LinkedHashMap<>();
+
+        for (AttendanceRecord record : records) {
+            if (record.getUser() == null) continue;
+
+            Long studentId = record.getUser().getId();
+            String studentName = record.getUser().getUsername();
+
+            StudentAttendanceStatsResponseDto dto = result.getOrDefault(
+                    studentId,
+                    StudentAttendanceStatsResponseDto.builder()
+                            .studentId(studentId)
+                            .studentName(studentName)
+                            .present(0)
+                            .absent(0)
+                            .percent(0)
+                            .build()
+            );
+
+            if (record.getRecordStatus() == RecordStatus.PRESENT) {
+                dto.setPresent(dto.getPresent() + 1);
+            } else {
+                dto.setAbsent(dto.getAbsent() + 1);
+            }
+
+            result.put(studentId, dto);
+        }
+
+        for (StudentAttendanceStatsResponseDto dto : result.values()) {
+            long total = dto.getPresent() + dto.getAbsent();
+            double percent = total == 0 ? 0 : (dto.getPresent() * 100.0 / total);
+            dto.setPercent(percent);
+        }
+
+        return new ArrayList<>(result.values());
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

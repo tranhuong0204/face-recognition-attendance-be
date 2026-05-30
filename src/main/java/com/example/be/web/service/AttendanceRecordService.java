@@ -2,6 +2,9 @@ package com.example.be.web.service;
 
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
+
+import com.example.be.web.doman.dto.response.attendance.StudentAttendanceStatsResponseDto;
+
 import com.example.be.web.doman.entity.AttendanceRecord;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,5 +19,6 @@ public interface AttendanceRecordService {
     List<AttendanceRecordResponseDto > getRecordsByUser(Long userId);
     // Cho user tự xem mình
     List<AttendanceRecordResponseDto> getMyRecords();
+    List<StudentAttendanceStatsResponseDto> getStudentStatsByClass(Long classId);
 }
 
