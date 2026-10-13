@@ -6,6 +6,7 @@ import com.example.be.web.doman.dto.response.facedata.EmbeddingResultDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
 import com.example.be.web.doman.entity.FaceData;
 import com.example.be.web.doman.entity.User;
+import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.FaceDataRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
@@ -40,7 +41,7 @@ public class FaceService {
         imageFile.transferTo(tempFile);
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.User.ERR_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
 
         double[] embedding = faceAIClient.getOriginalEmbedding(tempFile);
 

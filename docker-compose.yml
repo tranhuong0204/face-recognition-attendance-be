@@ -1,0 +1,58 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Tranhuong222@
+      MYSQL_DATABASE: hit_learning_connect
+#      MYSQL_USER: my
+#    ports:
+#      - "3306:3306" dùng Navicat/mySQL wrokbench??? mở cổng ra ngoài window, máy của bạn có thể truy cập vào container
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hit_learning_connect
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Tranhuong222@
+    depends_on:
+      - mysql
+      - redis
+
+  redis:
+    image: redis:7
+    environment:
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
+
+
+
+#    app:
+#        build: .
+#        ports:
+#        - "8000:8000"
+#        volumes:
+#        - .:/app
+#        environment:
+#        - DEBUG=1
+#        - SECRET_KEY=your_secret_key
+#        - DATABASE_URL=postgres://user:password@db:5432/dbname
+#        depends_on:
+#        - db
+#
+#    db:
+#        image: postgres:13
+#        environment:
+#        POSTGRES_USER: user
+#        POSTGRES_PASSWORD: password
+#        POSTGRES_DB: dbname
+#        volumes:
+#        - db_data:/var/lib/postgresql/data
