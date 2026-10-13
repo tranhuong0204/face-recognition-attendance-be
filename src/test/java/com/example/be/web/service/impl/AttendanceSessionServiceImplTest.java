@@ -260,7 +260,6 @@ class AttendanceSessionServiceImplTest {
                 mock(AttendanceSessionRequestDto.class);
 
         when(request.getClassId()).thenReturn(classId);
-        when(request.getLocationId()).thenReturn(null);
         when(sessionRepository.findById(sessionId))
                 .thenReturn(Optional.of(existing));
         when(classRepository.findById(classId))
