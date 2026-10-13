@@ -130,7 +130,6 @@ public class ClassRoomServiceImpl implements ClassRoomService {
         // Lấy danh sách ClassRoom từ DB theo phân trang
         Page<ClassRoom> classRooms = classRepository.findAll(pageable);
 
-        // Map từng entity sang DTO
         return classRooms.map(mapper::toResponse);
     }
 
