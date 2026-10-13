@@ -3,34 +3,25 @@ on:
   push:
     branches:
       - feature/learning
+  pull_request:
+    branches:
+      - feature/learning
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
           cache: maven
 
-#      - name: Build with Maven
-#        run: mvn clean install
-#      - name: Run tests
-#        run: mvn test
-      - name: Build JAR
-        run: mvn clean package
-
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-app-jar
-          path: target/*.jar
-
-      - name: Build Docker images
-        run: docker build -t be-face-app .
+      - name: Run test and build
+        run: chmod +x mvnw && ./mvnw -B clean verify
 #        run: docker compose build
