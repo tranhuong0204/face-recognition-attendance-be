@@ -1,6 +1,7 @@
 package com.example.be.web.service.impl;
 
 import com.example.be.web.doman.dto.response.facedata.EmbeddingResultDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,9 @@ public class FaceAIClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${face.ai.base-url}")
+    private String baseUrl;
+
 //    public double[] getEmbedding(String base64) {
 //
 //        String url = "http://localhost:5000/embedding";
@@ -39,7 +43,8 @@ public class FaceAIClient {
 //        return list.stream().mapToDouble(Double::doubleValue).toArray();
 //    }
     public double[] getOriginalEmbedding(File imageFile) {
-        String url = "http://localhost:5000/original_embedding";
+//        String url = "http://localhost:5000/original_embedding";
+        String url = baseUrl + "/original_embedding";
 
         FileSystemResource resource = new FileSystemResource(imageFile);
 
@@ -59,8 +64,8 @@ public class FaceAIClient {
     }
 
     public EmbeddingResultDto getAttendanceEmbedding(File imageFile) {
-        String url = "http://localhost:6000/attendance_embedding";
-
+//        String url = "http://localhost:6000/attendance_embedding";
+        String url = baseUrl + "/attendance_embedding";
         FileSystemResource resource = new FileSystemResource(imageFile);
 
         HttpHeaders headers = new HttpHeaders();
