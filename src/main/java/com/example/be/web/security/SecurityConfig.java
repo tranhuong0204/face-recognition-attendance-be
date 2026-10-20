@@ -67,7 +67,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/favicon.ico"
+                                "/favicon.ico",
+                                "/actuator/health"        // Cho phép truy cập Actuator (nếu cần)
                         ).permitAll()
                         .anyRequest().authenticated() // Tất cả các request khác phải có Token
                 )
