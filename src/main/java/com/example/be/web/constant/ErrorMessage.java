@@ -39,6 +39,7 @@ public class ErrorMessage {
         public static final String OUT_OF_RANGE = "error.user.out.of.range"; // thêm mới
         public static final String OUT_OF_TIME = "error.user.out.of.time";
         public static final String FACE_NOT_MATCH = "error.face.not.match";
+        public static final String RECORD_EXISTS = "error.attendance.record.exists";
 
     }
 

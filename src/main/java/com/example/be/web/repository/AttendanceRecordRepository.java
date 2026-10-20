@@ -1,5 +1,6 @@
 package com.example.be.web.repository;
 
+import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.entity.AttendanceRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,12 +8,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AttendanceRecordRepository extends JpaRepository<AttendanceRecord, Long> {
 
     List<AttendanceRecord> findByAttendanceSession_SessionId(Long sessionId);
-
+    Optional<AttendanceRecord> findByAttendanceSession_SessionIdAndUser_Id(Long sessionId, Long userId);
     List<AttendanceRecord> findByUser_Id(Long userId);
 
     @Query("""

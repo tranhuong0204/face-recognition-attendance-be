@@ -48,6 +48,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final LocationRepository locationRepository;
     private final AttendanceRecordMapper mapper;
     private final FaceService faceService;
+    private final AttendanceRecordRepository attendanceRecordRepository;
 
 
     @Override
@@ -76,6 +77,9 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
 //    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
 //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
 //    }
+        if (attendanceRecordRepository.findByAttendanceSession_SessionIdAndUser_Id(sessionId, userId).isPresent()) {
+            throw new BadRequestException(ErrorMessage.AttendanceRecord.RECORD_EXISTS);
+        }
 
         // 3. Gọi AI nhận diện khuôn mặt
         FaceResponse recognize = faceService.recognize(faceImage, userId);
