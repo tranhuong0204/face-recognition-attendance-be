@@ -45,6 +45,6 @@ jobs:
 
       - name: Run Postman Collection against Environment
         run: |
-          newman run postman/collection.json \
-                   -e postman/environment.json \
+          newman run postman/Face recognition attendance.postman_collection.json \
+                   -e postman/Attendance - Render.postman_environment.json \
                    --env-var "baseUrl=https://face-recognition-attendance-be.onrender.com"
