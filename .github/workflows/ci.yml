@@ -49,4 +49,3 @@ jobs:
           newman run postman/collection.json \
                    -e postman/environment.json \
                    --env-var "baseUrl=https://ten-ung-dung-cua-ban.onrender.com"
-          
