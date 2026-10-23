@@ -3,10 +3,11 @@ package com.example.be.web.exception.extended;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Setter
 @Getter
-
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class UnauthorizedException extends RuntimeException{
 
     private String message;

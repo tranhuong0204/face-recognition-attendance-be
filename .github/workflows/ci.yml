@@ -25,3 +25,32 @@ jobs:
       - name: Run test and build
         run: chmod +x mvnw && ./mvnw -B clean verify
 #        run: docker compose build
+
+name: Backend CI & API Testing
+
+on:
+  push:
+    branches: [ "main", "master", "learning" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (Required for Newman)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman (Postman CLI runner)
+        run: npm install -g newman
+
+      - name: Run Postman Collection against Environment
+        run: |
+          newman run postman/your_collection.json \
+                   -e postman/your_environment.json \
+                   --env-var "baseUrl=https://your-render-app-url.onrender.com"

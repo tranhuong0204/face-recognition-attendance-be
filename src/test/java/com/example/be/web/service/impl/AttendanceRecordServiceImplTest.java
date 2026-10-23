@@ -1,6 +1,7 @@
 package com.example.be.web.service.impl;
 
 import com.example.be.web.doman.dto.request.attendance.AttendanceRecordRequestDto;
+import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.dto.response.attendance.StudentAttendanceStatsResponseDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
 import com.example.be.web.doman.entity.AttendanceRecord;
@@ -8,12 +9,14 @@ import com.example.be.web.doman.entity.AttendanceSession;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceRecordMapper;
+import com.example.be.web.exception.extended.BadRequestException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceRecordRepository;
 import com.example.be.web.repository.AttendanceSessionRepository;
 import com.example.be.web.repository.LocationRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,6 +46,8 @@ class AttendanceRecordServiceImplTest {
     @Mock
     private AttendanceSessionRepository sessionRepository;
 
+    @Mock
+    private AttendanceRecordResponseDto attendanceRecordResponseDto;
 
     @Mock
     private UserRepository userRepository;
@@ -236,6 +241,63 @@ class AttendanceRecordServiceImplTest {
     }
 
     @Test
+    void checkIn_shouldThrowExceptionWhenRecordAlreadyExists() throws Exception {
+        Long sessionId = 1L;
+        Long userId = 10L;
+
+        mockCurrentUser(userId);
+
+        AttendanceSession session = AttendanceSession.builder()
+                .location(Location.builder().build())
+                .build();
+
+        User user = User.builder()
+                .id(userId)
+                .username("student1")
+                .build();
+
+        MockMultipartFile faceImage = new MockMultipartFile(
+                "faceImage",
+                "face.jpg",
+                "image/jpeg",
+                new byte[]{1, 2, 3}
+        );
+
+        AttendanceRecord existingRecord = AttendanceRecord.builder()
+                .user(user)
+                .attendanceSession(session)
+                .recordStatus(RecordStatus.PRESENT)
+                .build();
+
+        when(sessionRepository.findById(sessionId))
+                .thenReturn(Optional.of(session));
+
+        when(userRepository.findById(userId))
+                .thenReturn(Optional.of(user));
+
+        when(attendanceRecordRepository
+                .findByAttendanceSession_SessionIdAndUser_Id(sessionId, userId))
+                .thenReturn(Optional.of(existingRecord));
+
+        assertThrows(
+                BadRequestException.class,
+                () -> attendanceRecordService.checkIn(
+                        sessionId, faceImage, 21.0285, 105.8542
+                )
+        );
+
+        verify(attendanceRecordRepository)
+                .findByAttendanceSession_SessionIdAndUser_Id(sessionId, userId);
+
+        verifyNoInteractions(faceService);
+
+        verify(attendanceRecordRepository, never())
+                .save(any(AttendanceRecord.class));
+
+        verifyNoInteractions(mapper);
+    }
+
+    @Test
     void getRecordById_shouldReturnRecordWhenFound() {
         Long recordId = 1L;
         AttendanceRecord record = AttendanceRecord.builder().build();
@@ -264,7 +326,50 @@ class AttendanceRecordServiceImplTest {
     }
 
     @Test
-    void getRecordsBySession() {
+    void getRecordsBySession_shouldReturnRecordsSuccessfully() {
+        Long ssessionId = 1L;
+        AttendanceRecord record1 = AttendanceRecord.builder().build();
+        AttendanceRecord record2 = AttendanceRecord.builder().build();
+
+        List<AttendanceRecord> records = List.of(record1, record2);
+
+        AttendanceRecordResponseDto dto1 = mock(AttendanceRecordResponseDto.class);
+        AttendanceRecordResponseDto dto2 = mock(AttendanceRecordResponseDto.class);
+
+        List<AttendanceRecordResponseDto> expectedDtos = List.of(dto1, dto2);
+
+        when(attendanceRecordRepository.findByAttendanceSession_SessionId(ssessionId)).thenReturn(records);
+        when(mapper.toResponseList(records)).thenReturn(expectedDtos);
+
+        List<AttendanceRecordResponseDto> result = attendanceRecordService.getRecordsBySession(ssessionId);
+
+        assertEquals(expectedDtos, result);
+        verify(attendanceRecordRepository).findByAttendanceSession_SessionId(ssessionId);
+        verify(mapper).toResponseList(records);
+    }
+
+    @Test
+    void getRecordsByUser_shouldReturnRecordsSuccessfully() {
+        Long userId = 10L;
+
+        AttendanceRecord record = AttendanceRecord.builder().build();
+        List<AttendanceRecord> records = List.of(record);
+
+        AttendanceRecordResponseDto dto =
+                mock(AttendanceRecordResponseDto.class);
+        List<AttendanceRecordResponseDto> expected = List.of(dto);
+
+        when(attendanceRecordRepository.findByUser_Id(userId))
+                .thenReturn(records);
+        when(mapper.toResponseList(records)).thenReturn(expected);
+
+        List<AttendanceRecordResponseDto> result =
+                attendanceRecordService.getRecordsByUser(userId);
+
+        assertEquals(expected, result);
+
+        verify(attendanceRecordRepository).findByUser_Id(userId);
+        verify(mapper).toResponseList(records);
     }
 
     @Test
@@ -272,7 +377,28 @@ class AttendanceRecordServiceImplTest {
     }
 
     @Test
-    void getMyRecords() {
+    void getMyRecords_shouldReturnCurrentUserRecords() {
+        Long userId = 10L;
+        mockCurrentUser(userId);
+
+        AttendanceRecord record = AttendanceRecord.builder().build();
+        List<AttendanceRecord> records = List.of(record);
+
+        AttendanceRecordResponseDto dto =
+                mock(AttendanceRecordResponseDto.class);
+        List<AttendanceRecordResponseDto> expected = List.of(dto);
+
+        when(attendanceRecordRepository.findByUser_Id(userId))
+                .thenReturn(records);
+        when(mapper.toResponseList(records)).thenReturn(expected);
+
+        List<AttendanceRecordResponseDto> result =
+                attendanceRecordService.getMyRecords();
+
+        assertSame(expected, result);
+
+        verify(attendanceRecordRepository).findByUser_Id(userId);
+        verify(mapper).toResponseList(records);
     }
 
     @Test
@@ -326,5 +452,10 @@ class AttendanceRecordServiceImplTest {
         assertTrue(records.isEmpty());
 
         verify(attendanceRecordRepository).findByClassRoomId(classId);
+    }
+
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 }

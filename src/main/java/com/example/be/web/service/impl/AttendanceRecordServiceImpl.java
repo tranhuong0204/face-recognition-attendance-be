@@ -48,8 +48,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final LocationRepository locationRepository;
     private final AttendanceRecordMapper mapper;
     private final FaceService faceService;
-    private final AttendanceRecordRepository attendanceRecordRepository;
-
 
     @Override
     public FaceResponse checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) throws IOException {
@@ -77,7 +75,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
 //    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
 //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
 //    }
-        if (attendanceRecordRepository.findByAttendanceSession_SessionIdAndUser_Id(sessionId, userId).isPresent()) {
+        if (recordRepository.findByAttendanceSession_SessionIdAndUser_Id(sessionId, userId).isPresent()) {
             throw new BadRequestException(ErrorMessage.AttendanceRecord.RECORD_EXISTS);
         }
 
