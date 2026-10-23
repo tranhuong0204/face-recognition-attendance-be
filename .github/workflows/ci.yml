@@ -27,24 +27,24 @@ jobs:
 #        run: docker compose build
 
     # Job 2: Chạy kiểm thử API tự động bằng Postman (Newman)
-    api-test:
-      needs: build # Chạy sau khi Job build thành công
-      runs-on: ubuntu-latest
+  api-test:
+    needs: build # Chạy sau khi Job build thành công
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Set up Node.js (Required for Newman)
-          uses: actions/setup-node@v4
-          with:
-            node-version: '18'
+      - name: Set up Node.js (Required for Newman)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-        - name: Install Newman (Postman CLI runner)
-          run: npm install -g newman
+      - name: Install Newman (Postman CLI runner)
+        run: npm install -g newman
 
-        - name: Run Postman Collection against Environment
-          run: |
-            newman run postman/collection.json \
-                     -e postman/environment.json \
-                     --env-var "baseUrl=https://ten-ung-dung-cua-ban.onrender.com"
+      - name: Run Postman Collection against Environment
+        run: |
+          newman run postman/collection.json \
+                   -e postman/environment.json \
+                   --env-var "baseUrl=https://face-recognition-attendance-be.onrender.com"
