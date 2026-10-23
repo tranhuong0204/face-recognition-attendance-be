@@ -195,7 +195,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidHlwZSI6ImFjY2VzcyIsInVzZXJuYW1lIjoicGhhbXRoYWNoIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJpYXQiOjE3OTI3NTYyNDAsImV4cCI6MTc5Mjc1OTg0MH0.SLLTjlpZ0ntL37ZFOelAI_noXHVu2pQ1zFNoWnGnWug",
+                  "value": "",
                   "type": "string"
                 }
               ]
@@ -218,7 +218,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/locations?page=0&size=10",
+              "raw": "{{baseUrl}}/api/locations?page=0&size=100",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -233,7 +233,7 @@
                 },
                 {
                   "key": "size",
-                  "value": "10"
+                  "value": "100"
                 }
               ]
             }
@@ -289,14 +289,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/locations/1",
+              "raw": "{{baseUrl}}/api/locations/{{createdLocationId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "locations",
-                "1"
+                "{{createdLocationId}}"
               ]
             }
           },
@@ -348,57 +348,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/locations/2",
+              "raw": "{{baseUrl}}/api/locations/{{createdLocationId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "locations",
-                "2"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Copy",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"locationCode\": \"Tu Hoang\",\r\n  \"latitude\": 21.052867,\r\n  \"longitude\": 105.731789,\r\n  \"radiusMeters\": 1,\r\n  \"address\": \"string\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/locations",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "locations"
+                "{{createdLocationId}}"
               ]
             }
           },
