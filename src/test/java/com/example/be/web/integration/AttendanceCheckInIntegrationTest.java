@@ -46,13 +46,13 @@ import static org.springframework.test.web.servlet.result
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-//@ActiveProfiles("test")
-@Testcontainers
+@ActiveProfiles("test")
+//@Testcontainers
 public class AttendanceCheckInIntegrationTest {
 
-    @Container
-    @ServiceConnection
-    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0");
+//    @Container
+//    @ServiceConnection
+//    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0");
 
     @Autowired
     private MockMvc mockMvc;
