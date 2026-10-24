@@ -22,10 +22,10 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Run tests with full debug
-        run: mvn test -e -X
-#      - name: Run test and build
-#        run: chmod +x mvnw && ./mvnw -B clean verify -Dsurefire.useFile=false
+#      - name: Run tests with full debug
+#        run: mvn test -e -X
+      - name: Run test and build
+        run: chmod +x mvnw && ./mvnw -B clean verify -Dsurefire.useFile=false
 #        run: docker compose build
 
     # Job 2: Chạy kiểm thử API tự động bằng Postman (Newman)
